@@ -3,6 +3,7 @@ package thunks;
 import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 
 public class Thunk {
     public final static String REAL_EXE_NAME = "bins/exefile";
@@ -19,7 +20,7 @@ public class Thunk {
         InputStream is = getClass().getClassLoader().getResourceAsStream(REAL_EXE_NAME);
         File exefile = File.createTempFile("thunk_exe", FILE_SUFFIX);
 
-        Files.copy(is, exefile.toPath());
+        Files.copy(is, exefile.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
         exefile.setExecutable(true);
 

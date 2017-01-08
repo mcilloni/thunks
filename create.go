@@ -5,14 +5,13 @@ package main
 import (
     "archive/zip"
     "fmt"
+    "io"
     "os"
     "path/filepath"
     "strings"
 )
 
-var manifest = 
-`Manifest-Version: 1.0
-Main-Class: thunks.Thunk`
+var manifest = "Manifest-Version: 1.0\r\nMain-Class: thunks.Thunk\r\n"
 
 func errf(f string, args ...interface{}) {
 	fmt.Fprintf(os.Stderr, f, args...)
@@ -25,6 +24,12 @@ func errln(args ...interface{}) {
 }
 
 func makeThunk(binName, jarName string) error {
+    binFile, err := os.Open(binName)
+    if err != nil {
+        return err
+    }
+    defer binFile.Close()
+
     out, err := os.Create(jarName)
     if err != nil {
         return fmt.Errorf("while creating %s: %v", jarName, err)
@@ -40,7 +45,7 @@ func makeThunk(binName, jarName string) error {
     }
 
     if _, err := mf.Write([]byte(manifest)); err != nil {
-        return fmt.Errorf("while creating manifest: %v", err)
+        return fmt.Errorf("while adding manifest: %v", err)
     }
 
     thunkFile, err := wr.Create("thunks/Thunk.class")
@@ -49,10 +54,17 @@ func makeThunk(binName, jarName string) error {
     }
 
     if _, err := thunkFile.Write(thunk); err != nil {
-        return fmt.Errorf("while creating thunk class: %v", err)
+        return fmt.Errorf("while adding thunk class: %v", err)
     }
 
-    return nil
+    realExe, err := wr.Create("bins/exefile")
+    if err != nil {
+        return err
+    }
+
+    _, err = io.Copy(realExe, binFile)    
+
+    return err
 }
 
 func main() {
