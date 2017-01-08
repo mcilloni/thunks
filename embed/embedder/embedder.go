@@ -12,7 +12,7 @@ import (
 const tplStr = `// automatically generated from @{.fileName}; do not edit
 package @{.pkg}
 
-var @{.varName} = [...]byte{@{fmtBytes .bytes}}
+var @{.varName} = []byte{@{fmtBytes .bytes}}
 `
 
 func fmtByteLine(buf *bytes.Buffer, sl []byte) {
