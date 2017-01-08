@@ -5,13 +5,13 @@ import (
     "os/exec"
 )
 
-type JavaC struct {
+type Compiler struct {
     Exe string
     ClassDestDir string
     ClassPath string
 }
 
-func (jc *JavaC) Compile(sourceFiles []string) error {
+func (jc *Compiler) Compile(sourceFiles []string) error {
     exe := jc.Exe
     if exe == "" {
         exe = "javac"
