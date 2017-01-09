@@ -23,6 +23,7 @@ public class Thunk {
         Files.copy(is, exefile.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
         exefile.setExecutable(true);
+        exefile.deleteOnExit();
 
         mFileName = exefile.getAbsolutePath();
 
